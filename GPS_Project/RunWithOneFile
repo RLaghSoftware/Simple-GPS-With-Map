@@ -1,0 +1,1698 @@
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+import java.util.Stack;
+
+
+public class MainProject
+{
+
+ public static class LinkedListWithIterator<T> //Keep
+ {
+	 private Node firstNode; 
+	 private int numberOfEntries; 
+	 
+	 private Node tracker;
+		private Node tracker2;
+		private Node tracker3;
+		
+	 public LinkedListWithIterator() 
+	 { 
+	  initializeDataFields(); 
+	 } 
+
+	 public Iterator<T> iterator() 
+	 { 
+	return new IteratorForLinkedList(); 
+	 } 
+	public Iterator<T> getIterator() 
+	 { 
+	 return iterator(); 
+	 } 
+	private class IteratorForLinkedList implements Iterator 
+	{ 
+	 private Node nextNode; 
+	 private IteratorForLinkedList() 
+	 { 
+	nextNode = firstNode; 
+	 }
+
+	public boolean hasNext() {
+		return nextNode != null;
+	}
+
+	public Object next() 
+	{
+		T result;
+		 if (hasNext()) 
+		{
+		 result = nextNode.getData();
+		 nextNode = nextNode.getNextNode();
+		  } 
+		else
+		{ 
+		throw new NoSuchElementException("Illegal call to next(); " + "iterator is after end of list.");
+		}
+		 return result;
+
+	} 
+	}
+	private void initializeDataFields()
+	{
+
+
+	firstNode = null;
+	numberOfEntries = 0;
+	} 
+
+	private Node getNodeAt(int givenPosition)
+	{
+
+		 Node currentNode = new Node(null);
+		 currentNode = firstNode.getNextNode();
+		 
+		 for (int counter = 1; counter < givenPosition; counter++)
+		 { currentNode = currentNode.getNextNode();}
+			 
+			 return currentNode;
+	} // end getNodeAt
+
+	class Node 
+	{
+		 private T data; 
+		 private Node next; 
+		 
+		 private int position;
+		 
+		  private Node(T dataPortion)
+		  {
+		  this(dataPortion, null);
+		  } 
+		  
+		  public T getData()
+		  {
+			
+			return  data;
+		}
+
+		private Node getNextNode()
+		  {
+			  return next;
+		  }
+		 
+		  private Node(T dataPortion, Node nextNode)
+		  {
+		  data = dataPortion;
+		  next = nextNode;
+		  } 
+	}
+
+
+	public void add(T newEntry)
+	{
+		 
+			Node t = new Node(newEntry);
+			
+			
+			
+			
+				t.next = firstNode;
+				
+				 numberOfEntries++;
+					
+				 t.position = numberOfEntries;
+				 firstNode = t;
+				
+				 
+				
+			
+		
+	}
+
+	public int getLength()
+	{
+//		System.out.println(numberOfEntries);
+		return numberOfEntries;
+	}
+
+
+	public boolean isEmpty()
+	{
+//		System.out.println(numberOfEntries);
+		return (numberOfEntries == 0);
+	}
+
+
+	public void add(int newPosition, T newEntry)
+	{
+		if (newPosition < numberOfEntries)
+		{
+			System.out.println("Error: invalid position");
+			
+		}
+		else
+			
+		{
+		tracker = (Node)getEntry(newPosition);
+		tracker2 =(Node) newEntry;
+		tracker3 = (Node)getEntry(newPosition-1);
+		tracker2.next = tracker;
+		tracker3.next = tracker2;
+		
+		tracker2.position = newPosition;
+
+		
+		Node t = firstNode;
+		
+			
+					
+		while(newPosition > t.position)
+		{
+			t.position ++;
+			t= t.next;
+			
+		}
+		
+		tracker.position++;
+		
+		numberOfEntries++;
+		}
+	}
+
+
+	public T remove(int givenPosition)
+	{
+		if (givenPosition <= 0)
+		{
+			System.out.println("Error: invalid position");
+			return null;
+		}
+		else
+			
+		{
+		tracker =  getNode(getEntry(givenPosition));
+		tracker2 = tracker.next;
+		tracker3 = getNode(getEntry(givenPosition+1));
+		tracker3.next = tracker2;
+		tracker = new Node(null);
+		
+		Node t = firstNode;
+		
+			
+					
+		while(givenPosition < t.position)
+		{
+			t.position --;
+			t= t.next;
+			
+		}
+		
+		numberOfEntries--;
+		
+		return null;
+		}
+	}
+
+
+	private LinkedListWithIterator<T>.Node getNode(T entry) 
+	{
+		Node n = firstNode;
+		
+		while (!n.getData().equals(entry))
+		{
+			n = n.getNextNode();
+		}
+		if (n.getData().equals(entry))
+		{
+			return n;
+		}
+		else
+			
+		return null;
+	}
+
+	public T replace(int givenPosition, T newEntry) {
+		if (givenPosition > 0 && givenPosition <= numberOfEntries)
+		{
+		this.remove(givenPosition);
+		this.add(givenPosition, newEntry);
+		return newEntry;
+		}
+		else
+		{
+			System.out.println("error: position is out of bounds.");
+			return null;
+		}
+	}
+
+
+	public T getEntry(int givenPosition) {
+		Node t = firstNode;
+		if (givenPosition > 0 && givenPosition <=numberOfEntries)
+			
+		{			
+		while(givenPosition != t.position)
+		{
+			t= t.next;
+			
+		}
+			
+		return t.getData();
+		}
+		
+		else
+			
+		{	
+			System.out.println("error: position is out of bounds.");
+			return null;
+		}
+	}
+
+
+	public T[] toArray() {
+		int i;
+		Node t;
+
+		System.out.println("The list contains:");
+		
+		for (i=1; i<=numberOfEntries; i++)
+		{
+			t= (Node)getEntry(i);
+			System.out.print(t.data+" ");
+		
+		}
+		return null;
+	}
+
+
+	public boolean contains(T anEntry) {
+		int i;
+		boolean found = false;
+		Node t;
+		Node a= (Node)anEntry;
+		for (i=1; i<=numberOfEntries; i++)
+		{
+			t= (Node)getEntry(i);
+			if (a.data == t.data)
+			{
+				found = true;
+			}
+		
+		}
+		return found;
+
+	}
+
+ }
+
+
+public static class Dictionary <K, V>
+{
+
+	private Node firstNode;
+	private int numberOfEntries; 
+	private LinkedListWithIterator<K> KeyList;
+	private LinkedListWithIterator<V> ValueList;
+	
+	
+	
+	public Dictionary ()
+	{
+		initializeDataFields();
+	 } 
+	
+	
+	
+
+	 
+	 private void initializeDataFields()
+	 {
+	 
+	firstNode = null;
+	 numberOfEntries = 0;
+	 } 
+	
+	
+	
+	class Entry <K, V>
+	{
+		private K key;
+		private V value;
+		
+		private Entry (K searchKey, V dataValue)
+		{
+			key = searchKey;
+			value = dataValue;
+			
+		} // end constructor
+		
+		
+		
+		private K getKey()
+		{
+			return key;
+			
+		} // end getKey
+		
+		private V getValue()
+		
+		{
+			return value;
+		} // end getValue
+		
+		private void setValue (V dataValue)
+		{
+			value = dataValue;
+			
+		} // end setValue
+	
+	}
+	
+	
+	public class Node 
+	 {
+		 private Entry<K, V> data; 
+		 private Node next; 
+		 
+		
+		 
+		  private Node(Entry<K,V> dataPortion)
+		  {
+		  this(dataPortion, null);
+		  } 
+		  
+		 
+		  
+		  private Node(Entry<K,V> dataPortion, Node nextNode)
+		  {
+		  data = dataPortion;
+		  next = nextNode;
+		  } 
+		  
+		  private Node getNextNode()
+		  {
+			  return next;
+		  }
+		 
+		  private void setNextNode(Node n)
+		  {
+			 next = n ;
+		  }
+		  
+		  private Entry<K,V> getEntry()
+		  {
+			  return data;
+		  }
+		 
+		  private void setEntry(Entry<K,V> n)
+		  {
+			 data = n ;
+		  }
+	 }
+	
+	
+	
+	
+	public V add(K key, V value) 
+
+	{
+		if((key == null) || (value == null))
+			{
+			throw new IllegalArgumentException ("Cannot  add null to this dictionary.");
+			}
+		else
+			
+		{ 
+			V result = null;
+			if (this.contains(key))
+		{
+				Entry <K,V> E= locateEntry(key);
+				
+				result = E.getValue();
+				
+				 E.setValue(value);
+		}
+		
+			 
+			 
+			 else
+			 
+			 {	
+	//			 KeyList.add(key);
+	//				ValueList.add(value);
+				 Entry<K,V> E = new Entry<K,V> (key, value);
+				 Node n = new Node(E);
+				 n.setNextNode(firstNode);
+				 firstNode = n;
+			 numberOfEntries++;
+			 
+			 result = E.getValue();
+			 
+			
+		
+		} 
+			
+			return result;
+	}
+	}
+	
+	
+	
+	public Entry<K,V> locateEntry(K key)
+	
+	{
+		int index = 0;
+		Node a = new Node(null);
+		a= firstNode;
+		
+		int i;
+		
+		for (i=0; i<numberOfEntries; i++)
+		{
+			if (a.getEntry().getKey() != key)
+			{
+				a = a.getNextNode();
+			}
+			else
+			{
+				i = numberOfEntries;
+			}
+		}
+		
+		return a.getEntry(); 
+	}
+	
+	
+	
+	public Node locateNode(Entry<K,V> E)
+	{
+		Node a = new Node(null);
+		
+a= firstNode;
+		
+		int i;
+		
+		for (i=0; i<numberOfEntries; i++)
+		{
+			if (a.getEntry() != E)
+			{
+				a = a.getNextNode();
+			}
+			else
+			{
+				i = numberOfEntries;
+			}
+		}
+		
+		return a;
+		
+		
+	}
+	
+
+	
+	public V remove (K key)
+	{
+		if (this.contains(key))
+		{
+		V result = null;
+		
+		Entry <K,V> E= locateEntry(key);
+		
+		result = E.getValue();
+		
+		Node n = locateNode(E);
+		Node a = new Node(null);
+		a= firstNode;
+		
+		int i;
+		
+		for (i=0; i<numberOfEntries; i++)
+		{
+			if (a.getNextNode() != n)
+			{
+				a = a.getNextNode();
+			}
+			else
+			{
+				i = numberOfEntries;
+			}
+		}
+		
+		
+		a.setNextNode(n.getNextNode());
+		
+		numberOfEntries --;
+		
+		KeyList.remove(i+1);
+		ValueList.remove(i+1);
+		
+		return result;
+		}
+		
+		else
+		{
+			System.out.println("Error: key is not in the dictionary");
+			return null;
+		}
+	
+		}
+
+	
+	public V getValue (K key) 
+	{
+		if (this.contains(key))
+		{
+			
+		
+		V result = null;
+		
+		Entry<K,V> E = locateEntry(key);
+		
+		result = E.getValue();
+		
+		return result;
+		}
+		else
+		{
+			return null;
+		}
+	}
+
+	
+	public boolean contains(K key) 
+	{
+		boolean c = false;
+		
+		Node n = new Node(null);
+		
+		n = firstNode;
+		
+		int i;
+		
+		for (i=0; i<numberOfEntries; i++)
+		{
+			if (n.getEntry().getKey().equals(key))
+			{
+				c = true;
+				i = numberOfEntries+1;
+			}
+			else
+			{
+				n = n.getNextNode();
+			}
+		}
+		
+				
+		return c;
+	}
+
+	public Iterator<K> getKeyIterator() 
+	{		
+			Iterator<K> KeyIterator = KeyList.getIterator();	
+		return KeyIterator;
+	}
+
+	public Iterator<V> getValueIterator() {
+		Iterator<V> ValueIterator = ValueList.getIterator();	
+		return ValueIterator;
+	}
+
+	
+	public boolean isEmpty() {
+		
+		return (numberOfEntries == 0);
+	}
+
+	
+	public int getSize() 
+	{
+		
+		return numberOfEntries;
+	}
+
+	
+	 public void clear()
+	 {
+	 initializeDataFields();
+	 }
+
+}
+
+
+public static class Vertex<T> 
+{
+
+	private T label;
+	private LinkedListWithIterator<Edge> edgeList;
+	 // Edges to neighbors
+	private boolean visited; // True if visited
+	private Vertex<T> previousVertex; // On path to this vertex
+	private double cost; // Of path to this vertex
+	public Vertex(T vertexLabel)
+	 { 
+	label = vertexLabel; 
+	edgeList = new LinkedListWithIterator<>();
+	 visited = false;
+	 previousVertex = null; 
+	cost = 0; 
+	}
+
+
+	public class Edge
+	{
+	private Vertex<T> vertex;
+	 // Vertex at end of edge
+	private double weight;
+	protected Edge(Vertex<T> endVertex, double edgeWeight) 
+	{ 
+	vertex = endVertex;
+	 weight = edgeWeight;
+	 } 
+	// end constructor
+	protected Edge(Vertex<T> endVertex) 
+	{ 
+	vertex = endVertex; 
+	weight = 0; 
+	} 
+	// end constructor
+	protected Vertex<T> getEndVertex()
+	 {
+	return vertex; 
+	} // end getEndVertex
+	protected double getWeight() 
+	{
+	return weight; 
+	} 
+	}
+	
+	private class NeighborIterator implements Iterator<Vertex<T>>
+	 {
+	private Iterator<Edge> edges;
+	private NeighborIterator()
+	 { 
+	edges = edgeList.getIterator(); 
+	} 
+	public boolean hasNext() 
+	{
+		
+	return edges.hasNext(); 
+	} 
+	public Vertex<T> next() 
+	{
+	 Vertex<T> nextNeighbor = null;
+	if (edges.hasNext() && edges.next() != null) 
+	{ 
+	Edge edgeToNextNeighbor = edges.next();
+	 nextNeighbor = edgeToNextNeighbor.getEndVertex();
+	 }
+	else 
+	{
+		throw new NoSuchElementException();
+		
+	}
+	return nextNeighbor; 
+	}
+
+	
+	 } 
+	
+	private class WeightIterator implements Iterator<Double>
+	 {
+	private Iterator<Edge> edges;
+	private WeightIterator()
+	 { 
+	edges = edgeList.getIterator(); 
+	} 
+	public boolean hasNext() 
+	{
+	return edges.hasNext(); 
+	} 
+	public Double next() 
+	{
+	 Vertex<T> nextNeighbor = null;
+	if (edges.hasNext()) 
+	{ 
+	Edge edgeToNextNeighbor = edges.next();
+	 nextNeighbor = edgeToNextNeighbor.getEndVertex();
+	 }
+	else 
+	throw new NoSuchElementException();
+	return nextNeighbor.getCost(); 
+	}
+
+	
+	 }
+	
+	 
+	public T getLabel() 
+	{
+		
+		return label;
+	}
+
+	 
+	public void visit() 
+	{
+	
+		visited = true;
+	}
+
+	 
+	public void unvisit()
+	{
+		visited = false;	
+	}
+
+	 
+	public boolean isVisited() 
+	{
+		return (	visited == true);
+	}
+
+	
+	public boolean connect(Vertex<T> endVertex, double edgeWeight)
+	{
+		boolean result = false;
+		if (!this.equals(endVertex)) 
+		{ 
+		 Iterator<Vertex<T>> neighbors = getNeighborIterator();
+		boolean duplicateEdge = false;
+
+		 { 										
+			
+		edgeList.add(new Edge(endVertex, edgeWeight));
+		
+		 result = true; 
+		} 
+		 } 
+		return result;
+
+	}
+
+	 
+	public boolean equals (Object other)
+	{
+		boolean result;
+		if ((other == null) || (getClass() != other.getClass()))
+		 result = false;
+		else 
+		{
+		@SuppressWarnings("unchecked") 
+		Vertex<T> otherVertex = (Vertex<T>)other;
+		 result = label.equals(otherVertex.label);
+		 } 
+		return result;
+
+	}
+	
+	public boolean connect(Vertex<T> endVertex)
+	{
+		return connect(endVertex, 0);
+	}
+
+	 
+	public Iterator<Vertex<T>> getNeighborIterator() 
+	{
+		return new NeighborIterator();
+	}
+
+	 
+	public Iterator<Double> getWeightIterator()
+	{
+		// TODO Auto-generated method stub
+		return new WeightIterator();
+	}
+
+	 
+	public boolean hasNeighbor() 
+	{
+		return (!edgeList.isEmpty());
+	}
+
+	 
+	public Vertex<T> getUnvisitedNeighbor() 
+	{
+		Vertex<T> result = null; 
+		Iterator<Vertex<T>> neighbors = getNeighborIterator();
+		while ( neighbors.hasNext() && (result == null) ) 
+		{ 
+		Vertex<T> nextNeighbor = neighbors.next();
+		if (!nextNeighbor.isVisited()) 
+		result = nextNeighbor;
+		 } // end while
+		return result;
+
+	}
+
+	public Vertex<T> getNeighbor() 
+	{
+		Vertex<T> result = null; 
+		Iterator<Vertex<T>> neighbors = getNeighborIterator();
+		if ( neighbors.hasNext() ) 
+		{ 
+		Vertex<T> nextNeighbor = neighbors.next();
+		 
+		result = nextNeighbor;
+		 } // end while
+		return result;
+
+	}
+	
+	 
+	public void setPredecessor(Vertex<T> predecessor)
+	{
+		 previousVertex = predecessor;
+		
+	}
+
+	 
+	public Vertex<T> getPredecessor() 
+	{	
+		return previousVertex;
+	}
+
+	public int GetSize ()
+	{
+		return edgeList.getLength();
+	}
+	 
+	public boolean hasPredecessor() 
+	{
+		
+		return (previousVertex != null);
+	}
+
+	 
+	public void setCost(double newCost) 
+	{
+		cost = newCost;
+		
+	}
+
+	 
+	public double getCost() 
+	{
+		
+		return cost;
+	}
+	
+
+
+}
+
+public static class CaveSystem<T>
+{
+	private Dictionary<T, Cave<T>> caves; // all caves and their labels in this dictionary, label as the key
+	private int TunnelCount; // number of tunnels in the system
+	
+	 public CaveSystem() // constructor
+	 { 
+	 caves = new Dictionary<>(); 
+	 TunnelCount = 0; 
+	 }
+
+	
+	 
+	 
+		 
+	 
+	public boolean addCave(Cave<T> c) // creates cave
+	{
+		
+		Cave<T> addOutcome = caves.add(c.getLabel(), c); // adds cave to dictionary
+		return (addOutcome == null);
+
+	}
+	 
+	
+
+	public boolean addTunnel(T begin, T end) //adds tunnel between two caves
+	{
+		
+		boolean result = false;
+		 Cave<T> beginCave = caves.getValue(begin); // returns cave corresponding to keys (labels)
+		Cave<T> endCave = caves.getValue(end);
+		if ( (beginCave != null) && (endCave != null) )
+		 result = beginCave.connect(endCave); // forms a tunnel between caves
+		
+		if (result)
+		{		
+			TunnelCount++; // increments number of tunnels
+			
+	
+		if (!hasTunnel(end, begin)) // adds tunnel (pathway) from end cave to beginning cave
+		{
+			
+			addTunnel(end, begin);
+		}
+		
+		}
+		
+		
+	
+		return result;
+
+	}
+
+	
+	public boolean hasTunnel(T begin, T end) // returns true if two caves have a tunnel
+	{
+		
+		
+		boolean found = false;
+		 Cave<T> beginCave = caves.getValue(begin); // gets caves corresponding to labels
+		 Cave<T> endCave = caves.getValue(end);
+		if ( (beginCave != null) && (endCave != null) ) 
+		{ 
+		
+			if (beginCave.HasTunnelWith(endCave)) // checks if a tunnel exists
+			{
+				
+				found = true;
+			}
+		 } 
+		return found;
+
+	}
+
+	
+	public boolean isEmpty() // true if no caves exist
+	{
+		return caves.isEmpty();
+	}
+
+	
+	public int getNumberOfcaves() // returns amount of caves
+	{
+		return caves.getSize();
+	}
+	
+	public int getNumberOfTunnels() // returns amount of tunnels
+	{
+		return TunnelCount;
+	}
+	
+	public void clear() // removes all caves
+	{
+		caves.clear();  
+		TunnelCount = 0;
+	}
+	
+	public Cave<T> fillList ( Cave<T> StartCave, Cave<T> StartingCave, Stack<Cave<T>> Neighbors) // searches starting cave's neighbors, returns either exit or starting cave
+	{
+	
+		boolean found = false;
+		Cave <T> e = StartCave; // set to StartCave, but becomes exit if destination is found
+	
+		
+		while ( found == false  && StartingCave.getUnvisitedNeighbor() != null  ) // searches all neighbors to find exit, sets starting cave as predecessor to all neighbors.
+			{
+				Cave<T> NeighborofStartingCave = StartingCave.getUnvisitedNeighbor();
+				
+				NeighborofStartingCave.setPredecessor ( StartingCave);
+				NeighborofStartingCave.visit(); // marks neighbor as visit so they are not visited twice
+					if ( NeighborofStartingCave.IsExit())
+						{
+							e=NeighborofStartingCave;
+							found = true;
+							
+							
+						}
+					
+
+					Neighbors.add(NeighborofStartingCave);
+			}
+		
+		return e;
+	}
+	
+	public Cave<T> FindExit (Cave<T> startingCave) // finds path from starting cave to exit
+	
+	{
+	
+		Cave<T> Start = startingCave;
+	
+		Stack<Cave<T>> FirstL = new Stack<Cave<T>>();  // two lists that are going to be filled
+		Stack<Cave<T>> SecondL = new Stack<Cave<T>>();
+
+	
+		Cave <T> exit = new Cave <T> (null);
+	
+		exit = fillList(Start, Start, FirstL); // becomes either exit or starting cave (becomes starting cave if exit is not found)
+		
+		while  (exit.equals(startingCave)) // exit not found
+		{
+	
+
+				
+	
+			while (exit.equals(startingCave) && !FirstL.isEmpty()) 
+	
+			{
+				Start= FirstL.pop();
+				exit = fillList (exit, Start, SecondL); // fills secondL with neighbors of firstL
+				
+
+			}
+			
+			 FirstL = SecondL; // sets FirstL to SecondL 
+			 
+			 SecondL = new Stack<Cave<T>>(); //clears SecondL to allow process to occur again
+		}
+
+	return exit;
+	
+	}
+	
+
+
+
+	
+}
+
+public static class Cave<T>
+{
+	private T label; // "name" of the location, represented as an integer in this case
+	private LinkedListWithIterator<Tunnel> TunnelList; // list of all neighbors shared with this cave
+	 
+	private boolean visited; // True if visited
+	public boolean exit;    // True if exit;
+	private Cave<T> previousCave; // On path to this Cave
+	
+	public Cave(T CaveLabel) // constructor with Label given
+	 { 
+	label = CaveLabel; 
+	TunnelList = new LinkedListWithIterator<>();
+	 visited = false;
+	 exit = false;
+	 previousCave = null; 
+	 
+	}
+
+
+	public class Tunnel // used to represent a path between two locations
+	{
+	private Cave<T> Cave; // Cave at end of Tunnel
+	 
+
+
+	protected Tunnel(Cave<T> endCave) 
+	{ 
+	Cave = endCave; 
+	 
+	} 
+	
+	protected Cave<T> getEndCave() // end getEndCave
+	 {
+	return Cave; 
+	} 
+ 
+	}
+	
+	private class NeighborIterator implements Iterator<Cave<T>>
+	 {
+		
+		Cave<T> current;
+	int tracker;
+ 
+	private NeighborIterator()
+	 { 
+
+		tracker=0;
+	} 
+	public boolean hasNext() // true if end of list hasnt been reached
+	{
+	
+		return (tracker < TunnelList.getLength());
+	} 
+	public Cave<T> next() // iterates tracker and sets current cave to next neighboring cave in tunnel list
+	{
+	 Cave<T> nextNeighbor = current;
+	if ( hasNext() ) 
+	{ 
+		
+
+		tracker++;
+		Tunnel TunnelToNextNeighbor = TunnelList.getEntry(tracker);
+	 nextNeighbor = TunnelToNextNeighbor.getEndCave();
+	 }
+	else 
+	{
+	
+		tracker =0;
+		throw new NoSuchElementException();
+		
+	}
+	current = nextNeighbor;
+	return nextNeighbor; 
+	}
+
+	
+	 }
+	
+	
+	 
+	public T getLabel() // returns label (int that marks the name of the cave)
+	{
+		
+		return label;
+	}
+
+	 
+	public void visit() // "visits" the cave (used to find path to exit
+	{
+	
+		visited = true;
+	}
+	
+	public void setExit() // sets cave as destination
+	{
+	
+		exit = true;
+	}
+
+	public boolean IsExit() // true if cave is the destination
+	{
+		return (exit == true);
+	}
+	 
+	public void unvisit() // cave is not yet visited
+	{
+		visited = false;	
+	}
+
+	 
+	public boolean isVisited() //true if cave has been visited
+	{
+		return (	visited == true);
+	}
+
+	public boolean HasTunnelWith (Cave<T> GivenCave)   // Determines if Cave has a tunnel with GivenCave
+	{
+		Boolean hasTunnel = false;
+		Cave<T> CavetoCompareWith = null;
+		int i;
+		int NumberofNeighbors = TunnelList.getLength();
+		
+		if (NumberofNeighbors> 0)
+		{
+			CavetoCompareWith = TunnelList.getEntry(1).getEndCave(); // first neighbor in the list
+		}
+		else
+		{
+			return hasTunnel;
+		}
+		for (i=2; i<=NumberofNeighbors; i++)
+		{
+			if (CavetoCompareWith.equals(GivenCave)) // compares given cave to first neighbor in the list
+			{
+				hasTunnel = true;
+				return hasTunnel;
+			}
+			else
+			{
+				CavetoCompareWith = TunnelList.getEntry(i).getEndCave(); //goes down the list
+			}
+		}
+		if (CavetoCompareWith.equals(GivenCave))
+		{
+			hasTunnel = true;
+			
+		}
+		return hasTunnel;
+	}
+	
+	public boolean connect(Cave<T> endCave)  //Adds a tunnel with endCave
+	{
+		boolean result = false;
+		if (!this.equals(endCave)) 
+		{ 
+			
+		if (!this.HasTunnelWith(endCave))
+		 { 										
+			
+		TunnelList.add(new Tunnel(endCave)); // forms a tunnel
+		
+		
+		 result = true; 
+		} 
+		
+		
+		}
+		return result;
+
+	}
+
+	 
+	public boolean equals (Object other) // custom equals method
+	{
+		boolean result;
+		if ((other == null) || (getClass() != other.getClass())) // false if object is null or an object of a different class than "cave"
+		 result = false;
+		else 
+		{
+		@SuppressWarnings("unchecked") 
+		Cave<T> otherCave = (Cave<T>)other; 
+		 result = label.equals(otherCave.label); // if labels are equal, caves are equal
+		 } 
+		return result;
+
+	}
+	
+	
+	 
+	
+	 
+	
+	 
+	public boolean hasNeighbor() // true if cave has a neighbor
+	{
+		
+		return (!this.TunnelList.isEmpty());
+	}
+
+	 
+	public Cave<T> getUnvisitedNeighbor()  //returns neighbor that has not been visited yet
+	{
+		Cave<T> result = null; 
+		if (!this.hasNeighbor())
+		{
+			return null;
+		}
+	
+		NeighborIterator neighbors = new NeighborIterator();
+		while ( neighbors.hasNext() && (result == null) )  //goes down neighbords list until unvisited neighbor is found
+		{ 
+		Cave<T> nextNeighbor = neighbors.next();
+		if (!nextNeighbor.isVisited()) 
+		result = nextNeighbor;
+		 } // end while
+		return result;
+
+	}
+
+	public Cave<T> getNeighbor() //returns next neighbor
+	{
+		Cave<T> result = null; 
+
+		NeighborIterator neighbors = new NeighborIterator(); //returns next neighbor
+		if ( neighbors.hasNext() ) 
+		{ 
+		Cave<T> nextNeighbor = neighbors.next();
+		 
+		result = nextNeighbor;
+		 } // end while
+		return result;
+
+	}
+	
+	 
+	public void setPredecessor(Cave<T> predecessor) //sets cave as previous step in pathway
+	{
+		 previousCave = predecessor; 
+		
+	}
+
+	 
+	public Cave<T> getPredecessor() //returns previous step in pathway
+	{	
+		return previousCave;
+	}
+
+	public int GetSize () //returns number of neighbors
+	{
+		return TunnelList.getLength();
+	}
+	 
+	public boolean hasPredecessor() //true if there is a previous step in the pathway to this cave
+	{
+		
+		return (previousCave != null);
+	}
+	
+}
+
+public static void DisplayMap () // uses print statements to display map and instructions
+{
+System.out.println(" Using the following map, enter the number label of your destination");
+System.out.println(" and starting location, and the shortest path will be displayed: ");
+
+System.out.println("			");
+System.out.println("			");
+
+System.out.println("			MAP:");
+   System.out.println(" ");
+   System.out.println(" ");
+   System.out.println(" ");
+
+   System.out.println(" ");
+   System.out.println("		23	24     1      25 		");
+   System.out.println("		 O------O------O------O	    ");
+   System.out.println(" 		 |     /|     /|     /|		");
+   System.out.println("		 |    / |    / |    / |	    ");
+   System.out.println("		 |   /  |   /  |   /  |	    ");
+   System.out.println("		 |  /   |  /   |  /   |	    ");
+   System.out.println("	         | /    | /    | /    |	    ");
+   System.out.println("	       21|/    2|/    3|/   22|	    ");
+   System.out.println("	         O------O------O------O	    ");
+   System.out.println("                 |     /|     /|\\     |	");
+   System.out.println("                 |    / |    / | \\    |	");
+   System.out.println("                 |   /  |   /  |  \\   |	");
+   System.out.println("                 |  /   |  /   |   \\  |	");
+   System.out.println("                 | /    | /    |    \\ |	");
+   System.out.println("                4|/   20|/    6|     \\|5	");
+   System.out.println("                 O------O------O------O	");
+   System.out.println("                 |     /|     /      /| ");
+   System.out.println("                 |    / |    /      / | ");
+   System.out.println("                 |   /  |   /      /  | ");
+   System.out.println("                 |  /   |  /      /   | ");
+   System.out.println("                 | /    | /      /    | ");
+   System.out.println("                7|/   10|/    9 /    8| ");
+   System.out.println("                 O------O------O------O	");
+   System.out.println("                 |      |      |      | ");
+   System.out.println("                 |      |      |      | ");
+   System.out.println("                 |      |      |      | ");
+   System.out.println("                 |      |      |      | ");
+   System.out.println("                 |      |      |      | ");
+   System.out.println("               11|    14|    13|    12| ");
+   System.out.println("                 O------O------O------O	");
+   System.out.println("                /      /|      |      |	");
+   System.out.println("               /      / |      |      |   ");
+   System.out.println("              /      /  |      |      |   ");
+   System.out.println("             /      /   |      |      | ");
+   System.out.println("            /      /    |      |      |");
+   System.out.println("         15/    18/   19|    17|    16|");
+   System.out.println("          O------O------O------O------O	");
+   System.out.println("			");
+   System.out.println("			");;
+
+   
+}
+
+public static void main (String [] args)
+ {
+
+	Scanner keyboard89 =new	Scanner(System.in);
+	int DestinationLabel = 0;
+
+	DisplayMap();
+	System.out.println("Enter destination label");
+	while (DestinationLabel<1 || DestinationLabel > 25) // validates label
+	{
+		DestinationLabel = keyboard89.nextInt();
+		if (DestinationLabel<1 || DestinationLabel > 25)
+		{
+			System.out.println("Error: the label you entered is invalid, please try again:");
+		}
+	}
+	
+	Scanner keyboard90 =new	Scanner(System.in);
+	int StartLabel = 0;
+	System.out.println("Enter starting location label");
+	while (StartLabel<1 || StartLabel > 25) // validates label
+	{
+		StartLabel = keyboard89.nextInt();
+		if (StartLabel<1 || StartLabel > 25)
+		{
+			System.out.println("Error: the label you entered is invalid, please try again:");
+		}
+	}
+	
+	CaveSystem<Object> n = new CaveSystem<Object>();
+
+	
+	Cave<Object> a = new Cave(1); // adds caves and tunnels
+	Cave<Object> b = new Cave(2);
+	Cave<Object> c = new Cave(3);
+	Cave<Object> d = new Cave(4);
+	Cave<Object> e = new Cave(5);
+	Cave<Object> f = new Cave(6);
+	Cave<Object> g = new Cave(7);
+	Cave<Object> h = new Cave(8);
+	Cave<Object> i = new Cave(9);
+	Cave<Object> j = new Cave(10);
+	Cave<Object> k = new Cave(11);
+	Cave<Object> l = new Cave(12);
+	Cave<Object> m = new Cave(13);
+	Cave<Object> nn = new Cave(14);
+	Cave<Object> o = new Cave(15);
+	Cave<Object> p = new Cave(16);
+	Cave<Object> q = new Cave(17);
+	Cave<Object> r = new Cave(18);
+	Cave<Object> s = new Cave(19);
+	Cave<Object> t = new Cave(20);
+	Cave<Object> u = new Cave(21);
+	Cave<Object> v = new Cave(22);
+	Cave<Object> w = new Cave(23);
+	Cave<Object> yyy = new Cave(24);
+	Cave<Object> z = new Cave(25);
+	
+n.addCave(a);
+n.addCave(b);
+n.addCave(c);
+n.addCave(d);
+n.addCave(e);
+n.addCave(f);
+n.addCave(g);
+n.addCave(h);
+n.addCave(i);
+n.addCave(j);
+n.addCave(k);
+n.addCave(l);
+n.addCave(m);
+n.addCave(nn);
+n.addCave(o);
+n.addCave(p);
+n.addCave(q);
+n.addCave(r);
+n.addCave(s);
+n.addCave(t);
+n.addCave(u);
+n.addCave(v);
+n.addCave(w);
+n.addCave(yyy);
+n.addCave(z);
+
+n.addTunnel(a.getLabel(), b.getLabel());
+n.addTunnel(a.getLabel(), c.getLabel());
+
+n.addTunnel(b.getLabel(), d.getLabel());
+n.addTunnel(b.getLabel(), c.getLabel());
+
+n.addTunnel(c.getLabel(), e.getLabel());
+n.addTunnel(c.getLabel(), f.getLabel());
+
+n.addTunnel(d.getLabel(), g.getLabel());
+
+
+n.addTunnel(e.getLabel(), h.getLabel());
+n.addTunnel(e.getLabel(), i.getLabel());
+
+n.addTunnel(f.getLabel(), j.getLabel());
+n.addTunnel(f.getLabel(), e.getLabel());
+
+n.addTunnel(g.getLabel(), k.getLabel());
+n.addTunnel(g.getLabel(), j.getLabel());
+
+n.addTunnel(h.getLabel(), l.getLabel());
+
+n.addTunnel(i.getLabel(), m.getLabel());
+n.addTunnel(i.getLabel(), h.getLabel());
+
+n.addTunnel(j.getLabel(), nn.getLabel());
+n.addTunnel(j.getLabel(), i.getLabel());
+
+n.addTunnel(k.getLabel(), o.getLabel());
+n.addTunnel(k.getLabel(), nn.getLabel());
+
+n.addTunnel(l.getLabel(), p.getLabel());
+
+n.addTunnel(m.getLabel(), q.getLabel());
+n.addTunnel(m.getLabel(), l.getLabel());
+
+n.addTunnel(nn.getLabel(), r.getLabel());
+n.addTunnel(nn.getLabel(), s.getLabel());
+n.addTunnel(nn.getLabel(), m.getLabel());
+
+n.addTunnel(o.getLabel(), r.getLabel());
+
+n.addTunnel(r.getLabel(), s.getLabel());
+
+n.addTunnel(s.getLabel(), q.getLabel());
+
+n.addTunnel(q.getLabel(), p.getLabel());
+
+n.addTunnel(t.getLabel(), b.getLabel());
+n.addTunnel(t.getLabel(), c.getLabel());
+n.addTunnel(t.getLabel(), d.getLabel());
+n.addTunnel(t.getLabel(), f.getLabel());
+n.addTunnel(t.getLabel(), g.getLabel());
+n.addTunnel(t.getLabel(), j.getLabel());
+
+n.addTunnel(u.getLabel(), b.getLabel());
+n.addTunnel(u.getLabel(), d.getLabel());
+
+n.addTunnel(v.getLabel(), c.getLabel());
+n.addTunnel(v.getLabel(), e.getLabel());
+
+n.addTunnel(w.getLabel(), u.getLabel());
+
+n.addTunnel(yyy.getLabel(), w.getLabel());
+n.addTunnel(yyy.getLabel(), a.getLabel());
+n.addTunnel(yyy.getLabel(), u.getLabel());
+n.addTunnel(yyy.getLabel(), b.getLabel());
+
+n.addTunnel(z.getLabel(), a.getLabel());
+n.addTunnel(z.getLabel(), c.getLabel());
+n.addTunnel(z.getLabel(), v.getLabel());
+
+
+
+
+Cave<Object> Destination;
+Cave<Object> StartingLocation;
+
+Stack<Cave<Object>> AllCaves = new Stack<Cave<Object>>(); // list of all caves
+
+AllCaves.add(a);
+AllCaves.add(b);
+AllCaves.add(c);
+AllCaves.add(d);
+AllCaves.add(e);
+AllCaves.add(f);
+AllCaves.add(g);
+AllCaves.add(h);
+AllCaves.add(i);
+AllCaves.add(j);
+AllCaves.add(k);
+AllCaves.add(l);
+AllCaves.add(m);
+AllCaves.add(nn);
+AllCaves.add(o);
+AllCaves.add(p);
+AllCaves.add(q);
+AllCaves.add(r);
+AllCaves.add(s);
+AllCaves.add(t);
+AllCaves.add(u);
+AllCaves.add(v);
+AllCaves.add(w);
+AllCaves.add(yyy);
+AllCaves.add(z);
+
+
+int LabelTrackerToFindDestinationLabel;
+
+Destination= AllCaves.pop(); 
+
+LabelTrackerToFindDestinationLabel= (int) Destination.getLabel();
+
+
+
+while (!AllCaves.isEmpty() && DestinationLabel!= LabelTrackerToFindDestinationLabel ) // searches until destination cave given is found
+{
+	Destination= AllCaves.pop();
+	LabelTrackerToFindDestinationLabel= (int) Destination.getLabel();
+}
+
+ AllCaves = new Stack<Cave<Object>>(); //creates new stack containing all caves
+
+AllCaves.add(a);
+AllCaves.add(b);
+AllCaves.add(c);
+AllCaves.add(d);
+AllCaves.add(e);
+AllCaves.add(f);
+AllCaves.add(g);
+AllCaves.add(h);
+AllCaves.add(i);
+AllCaves.add(j);
+AllCaves.add(k);
+AllCaves.add(l);
+AllCaves.add(m);
+AllCaves.add(nn);
+AllCaves.add(o);
+AllCaves.add(p);
+AllCaves.add(q);
+AllCaves.add(r);
+AllCaves.add(s);
+AllCaves.add(t);
+AllCaves.add(u);
+AllCaves.add(v);
+AllCaves.add(w);
+AllCaves.add(yyy);
+AllCaves.add(z);
+
+int LabelTrackerToFindStartingLabel;
+
+
+StartingLocation= AllCaves.pop();
+
+LabelTrackerToFindStartingLabel= (int) StartingLocation.getLabel();
+
+
+
+while (!AllCaves.isEmpty() && StartLabel!=LabelTrackerToFindStartingLabel ) // searches until destination cave given is found
+{
+	StartingLocation= AllCaves.pop();
+	LabelTrackerToFindStartingLabel= (int) StartingLocation.getLabel();
+}
+
+keyboard89.close();
+keyboard90.close();
+
+Destination.setExit();
+
+
+if (LabelTrackerToFindDestinationLabel ==(int) StartingLocation.getLabel())
+{
+	System.out.println("You are at your destination already!");
+}
+ 
+
+
+
+else
+{
+	
+	Cave<Object> exit = n.FindExit(StartingLocation);
+Stack<Cave<Object>> Pathway = new Stack<Cave<Object>>(); // contains all caves in path to exit
+
+
+System.out.println("To arrive at your destination, take the following path");
+
+Cave<Object> Path = exit;
+
+while (!Path.getPredecessor().equals(StartingLocation))
+{
+	Path = Path.getPredecessor();
+	Pathway.add(Path);
+}
+
+int count = 0;
+
+System.out.print(StartingLocation.getLabel()+ " ---> ");
+while (!Pathway.isEmpty())
+{
+	
+	count ++;
+	System.out.print(Pathway.pop().getLabel()+ " ---> ");
+	if (count % 8 == 0)
+	{
+		System.out.println(" ");
+	}
+}
+
+System.out.println(exit.getLabel());
+
+}
+
+
+
+}
+
+
+}
